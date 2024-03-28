@@ -1,0 +1,6 @@
+#+TITLE: Zig milestone monitor
+#+DATE: 2024-03-28T21:12:54+0800
+#+LASTMOD: 2024-03-28T21:13:58+0800
+#+AUTHOR: Jiacai Liu
+
+Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress ⚡️

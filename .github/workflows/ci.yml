@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '00 20 * * *'
+
+jobs:
+  examples:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          npm i
+      - name: Update
+        run: |
+          node index.mjs
