@@ -16,4 +16,6 @@ jobs:
           npm i
       - name: Update
         run: |
+          export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
+          export URL=libsql://zig-jiacai2050.turso.io
           node index.mjs

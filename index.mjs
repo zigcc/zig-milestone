@@ -18,14 +18,15 @@ async function fetch_milestone_histories() {
 
     try {
       const r = await client.execute({
-        sql: "INSERT INTO milestone_histories VALUES (:mid, :created_at, :open_issues, :closed_issues)",
-        args: { mid: mid,
-                open_issues: m['open_issues'],
-                closed_issues: m['closed_issues'],
-                created_at: now,
-              },
+        sql: "INSERT INTO milestone_histories VALUES (:created_at, :mid, :open_issues, :closed_issues)",
+        args: {
+          created_at: now,
+          mid: mid,
+          open_issues: m['open_issues'],
+          closed_issues: m['closed_issues'],
+        },
       });
-      console.log(milestones);
+      console.log(r);
     } catch (e) {
       console.error(mid, e);
     }
@@ -41,13 +42,14 @@ async function fetch_milestones() {
   for(const m of milestones) {
     const r = await client.execute({
       sql: "INSERT INTO milestones VALUES (:id, :created_at, :updated_at, :state, :title, :description)",
-      args: { id: m['number'],
-              created_at: m['created_at'],
-              updated_at: m['updated_at'],
-              state: m['state'],
-              title: m['title'],
-              description: m['description'],
-            },
+      args: {
+        id: m['number'],
+        created_at: m['created_at'],
+        updated_at: m['updated_at'],
+        state: m['state'],
+        title: m['title'],
+        description: m['description'],
+      },
     });
     console.log(`insert ret ${JSON.stringify(r)}`);
   }
