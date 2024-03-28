@@ -2,6 +2,8 @@ name: Pages
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '00 20 * * *'
   push:
     branches:
       - main
@@ -25,7 +27,10 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
-          echo "TBD"
+          npm i
+          export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
+          export URL=libsql://zig-jiacai2050.turso.io
+          node page.mjs > index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:

@@ -2,9 +2,9 @@
   "name": "zig-milestone",
   "version": "1.0.0",
   "description": "",
-  "main": "index.mjs",
+  "main": "db.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "update-db": "node db.mjs"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/zigcc/zig-milestone#readme",
   "dependencies": {
-    "@libsql/client": "^0.6.0"
+    "@libsql/client": "^0.6.0",
+    "ejs": "^3.1.9"
   }
 }

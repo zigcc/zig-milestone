@@ -1,6 +1,29 @@
 #+TITLE: Zig milestone monitor
 #+DATE: 2024-03-28T21:12:54+0800
-#+LASTMOD: 2024-03-28T21:13:58+0800
+#+LASTMOD: 2024-03-28T21:35:26+0800
 #+AUTHOR: Jiacai Liu
 
-Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress ⚡️
+Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress ⚡️, powered by [[https://turso.tech/][Turso]].
+
+* SQLite tables
+#+begin_src sql
+
+CREATE TABLE IF NOT EXISTS milestones (
+  id integer PRIMARY KEY,
+  created_at integer,
+  updated_at integer,
+  state text,
+  title text,
+  description text
+);
+
+CREATE TABLE IF NOT EXISTS milestone_histories (
+  created_at integer,
+  mid integer,
+  open_issues integer,
+  closed_issues integer
+);
+#+end_src
+
+* License
+MIT

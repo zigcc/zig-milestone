@@ -1,7 +1,7 @@
 import { createClient } from "@libsql/client";
 
 const client = createClient({
-  url: process.env.URL ?? "file:local.db",
+  url: process.env.URL ?? "file:/tmp/zig-local.db",
   authToken: process.env.TURSO_TOKEN,
 });
 

@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Zig milestone monitor</title>
+    <meta name="author" content="Jiacai Liu">
+
+    <link rel="stylesheet" href="https://unpkg.com/normalize.css">
+    <link rel="stylesheet" href="https://unpkg.com/magick.css">
+
+  </head>
+
+  <body>
+    <main>
+      <header>Zig milestone monitor</header>
+      <section>
+        <table>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Opened issues</th>
+          <th>Closed issues</th>
+        <tbody id="histories">
+<%  for(let row of rows) { %>
+<tr>
+
+  <td><%= row.title %></td>
+  <td><%= new Date(row.created_at).toLocaleString('en-GB') %></td>
+  <td><%= row.open_issues %></td>
+  <td><%= row.closed_issues %></td>
+
+</tr>
+<%  }  %>
+        </tbody>
+        </table>
+      </section>
+      <section>
+        Last Update: <%= now %>
+      </section>
+      <footer> &copy; 2024 ZigCC |
+        <a href="https://github.com/zigcc/zig-milestone">GitHub</a>
+      </footer>
+    </main>
+  </body>
+</html>
