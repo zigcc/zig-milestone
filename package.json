@@ -4,7 +4,9 @@
   "description": "",
   "main": "db.mjs",
   "scripts": {
-    "update-db": "node db.mjs"
+    "fetch-history": "./app.mjs fetch-history",
+    "gen-page": "./app.mjs gen-page",
+    "fetch-milestone": "./app.mjs fetch-milestone"
   },
   "repository": {
     "type": "git",

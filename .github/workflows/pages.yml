@@ -27,10 +27,15 @@ jobs:
         with:
           fetch-depth: 0
       - run: |
+          # https://github.com/wilsonzlin/minify-html
+          cargo install minhtml
           npm i
+      - run: |
           export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
           export URL=libsql://zig-jiacai2050.turso.io
-          node page.mjs > index.html
+          npm run gen-page
+          minhtml --output index.html --keep-closing-tags --minify-css raw.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
