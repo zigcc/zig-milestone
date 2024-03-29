@@ -3,7 +3,7 @@ name: Pages
 on:
   workflow_dispatch:
   schedule:
-    - cron: '02 20 * * *'
+    - cron: '02 13 * * *'
   push:
     branches:
       - main
