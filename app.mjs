@@ -9,7 +9,7 @@ const client = createClient({
   authToken: process.env.TURSO_TOKEN,
 });
 
-async function fetch_milestone_histories() {
+async function fetchHistories() {
   const rs = await client.execute(
     "select id from milestones where state = 'open'"
   );
@@ -37,7 +37,7 @@ async function fetch_milestone_histories() {
 
 }
 
-async function fetch_milestones() {
+async function fetchMilestones() {
   const resp = await fetch('https://api.github.com/repos/ziglang/zig/milestones');
   const milestones = await resp.json();
   for(const m of milestones) {
@@ -56,50 +56,76 @@ async function fetch_milestones() {
   }
 }
 
-async function generate_html() {
+async function GenerateHtml() {
   const file_opts = { 'encoding': 'utf8', 'flags': 'w' };
-  let tmpl = fs.readFileSync(`template.ejs`, file_opts);
   const rs = await client.execute(
     `
 SELECT
-    mh.created_at,
-    title,
-    open_issues,
-    closed_issues,
-    mh.mid
+    id,
+    title
 FROM
-    milestone_histories mh,
     milestones m
 WHERE
-    mh.mid = m.id
-    and m.state = 'open'
-    and open_issues > 0
-ORDER BY
-    title,
-    mh.created_at DESC
+    state = 'open'
 `
   );
-  const rows = rs.rows;
-  let body = ejs.render(tmpl, {
-    rows: rows,
-    now: new Date().toLocaleString('en-GB')
-  });
+  let idToTitle = {};
+  for (const row of rs.rows) {
+    idToTitle[row['id']] = row['title'];
+  }
+  console.log(idToTitle);
 
-  fs.writeFileSync('raw.html', body, file_opts);
+  const idsToShow = [
+    '23', // 0.12.0
+    '20', // 0.13.0
+    '19', // '0.14.0',
+    '14', // '0.15.0',
+    '2', // '1.0.0'
+    '5', // '1.1.0',
+  ];
+
+  const sqls = idsToShow.map((id) => {
+    return { sql: `
+SELECT
+    created_at,
+    open_issues,
+    closed_issues
+FROM
+    milestone_histories
+where mid = ?
+ORDER BY
+    created_at desc
+limit 1000
+`, args: [id] };
+  });
+  const histories = await client.batch(sqls, 'read');
+  let historiesById = {}; // id -> [[timestamp, open, closed], ...]
+  idsToShow.forEach((id, idx) => {
+    historiesById[id] = histories[idx].rows.map((row) =>
+      [row['created_at'], row['open_issues'], row['closed_issues']]);
+  });
+  let tmpl = fs.readFileSync(`template.ejs`, file_opts);
+  let body = ejs.render(tmpl, {
+    now: new Date().toLocaleString('en-GB'),
+    historiesByIdStr: JSON.stringify(historiesById),
+    idToTitleStr: JSON.stringify(idToTitle),
+    idsToShow: idsToShow,
+  });
+  fs.writeFileSync('web/raw.html', body, file_opts);
 }
 
 const args = process.argv.slice(2);
 const cmd = args[0];
 switch(cmd) {
 case 'fetch-history':
-  await fetch_milestone_histories();
+  await fetchHistories();
   console.log(cmd);
   break;
 case 'fetch-milestone':
-  await fetch_milestones();
+  await fetchMilestones();
   break;
 case 'gen-page':
-  await generate_html();
+  await GenerateHtml();
   break;
 default:
   console.error("unknown");

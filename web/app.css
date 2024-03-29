@@ -1,0 +1,9 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+.chart {
+  position: relative;
+  height: 50vh;
+  overflow: hidden;
+}

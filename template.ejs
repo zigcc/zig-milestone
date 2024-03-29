@@ -3,44 +3,39 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-
-    <title>Zig milestone monitor</title>
+    <title>Zig Milestone Monitor</title>
     <meta name="author" content="Jiacai Liu">
-
     <link rel="stylesheet" href="https://unpkg.com/normalize.css">
     <link rel="stylesheet" href="https://unpkg.com/magick.css">
-
+    <link rel="stylesheet" href="app.css">
+    <script>
+      const historiesById = <%- historiesByIdStr  %>;
+      const idToTitle  = <%- idToTitleStr  %>;
+      window.onload = function() {
+      <% for(const id of idsToShow) { %>
+        renderChart(historiesById, idToTitle, <%= id %>);
+      <% } %>
+      }
+    </script>
   </head>
 
   <body>
     <main>
       <header><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</header>
       <section>
-        <table>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Opened issues</th>
-          <th>Closed issues</th>
-        <tbody id="histories">
-<%  for(let row of rows) { %>
-<tr>
-
-  <td><%= row.title %></td>
-  <td><%= new Date(row.created_at).toLocaleString('en-GB') %></td>
-  <td><%= row.open_issues %></td>
-  <td><%= row.closed_issues %></td>
-
-</tr>
-<%  }  %>
-        </tbody>
-        </table>
+      <% for(const id of idsToShow) { %>
+        <div class="chart" id="chart-<%= id %>"></div>
+      <% } %>
       </section>
       <section>
-        Last Update: <%= now %>
+        Last Update: <%= now %>(UTC)
       </section>
+
       <footer> &copy; 2024 ZigCC |
         <a href="https://github.com/zigcc/zig-milestone">GitHub</a>
       </footer>
     </main>
+    <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
