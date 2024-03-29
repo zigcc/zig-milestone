@@ -10,11 +10,12 @@ const client = createClient({
 });
 
 async function fetchHistories() {
-  const rs = await client.execute(
+  const result = await client.execute(
     "select id from milestones where state = 'open'"
   );
   const now = Date.now();
-  for (const row of rs.rows) {
+  let firstErr = null;
+  for (const row of result.rows) {
     const mid = row['id'];
     const resp = await fetch(`https://api.github.com/repos/ziglang/zig/milestones/${mid}`);
     const m = await resp.json();
@@ -31,10 +32,16 @@ async function fetchHistories() {
       });
       console.log(r);
     } catch (e) {
+      if (!firstErr) {
+        firstErr = e;
+      }
       console.error(mid, e);
     }
   }
 
+  if (firstErr) {
+    throw firstErr;
+  }
 }
 
 async function fetchMilestones() {
@@ -52,14 +59,14 @@ async function fetchMilestones() {
         description: m['description'],
       },
     });
-    console.log(`insert ret ${JSON.stringify(r)}`);
+    console.log(`insert milestone result`, r);
   }
 }
 
 async function GenerateHtml() {
-  const file_opts = { 'encoding': 'utf8', 'flags': 'w' };
+  const fileOpts = { 'encoding': 'utf8', 'flags': 'w' };
   const rs = await client.execute(
-    `
+`
 SELECT
     id,
     title
@@ -104,7 +111,7 @@ limit 1000
     historiesById[id] = histories[idx].rows.map((row) =>
       [row['created_at'], row['open_issues'], row['closed_issues']]);
   });
-  let tmpl = fs.readFileSync(`template.ejs`, file_opts);
+  let tmpl = fs.readFileSync(`template.ejs`, fileOpts);
   let body = ejs.render(tmpl, {
     now: new Date().toLocaleString('en-GB'),
     historiesById: historiesById,
@@ -112,7 +119,7 @@ limit 1000
     idToTitleStr: JSON.stringify(idToTitle),
     idsToShow: idsToShow,
   });
-  fs.writeFileSync('web/raw.html', body, file_opts);
+  fs.writeFileSync('web/raw.html', body, fileOpts);
 }
 
 const args = process.argv.slice(2);
@@ -120,7 +127,6 @@ const cmd = args[0];
 switch(cmd) {
 case 'fetch-history':
   await fetchHistories();
-  console.log(cmd);
   break;
 case 'fetch-milestone':
   await fetchMilestones();
@@ -129,5 +135,5 @@ case 'gen-page':
   await GenerateHtml();
   break;
 default:
-  console.error("unknown");
+  console.error("unknown cmd", cmd);
 }
