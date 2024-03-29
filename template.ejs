@@ -13,7 +13,7 @@
       const idToTitle  = <%- idToTitleStr  %>;
       window.onload = function() {
       <% for(const id of idsToShow) { %>
-        renderChart(historiesById, idToTitle, <%= id %>);
+      renderChart(historiesById, idToTitle, <%= id %>);
       <% } %>
       }
     </script>
@@ -21,12 +21,28 @@
 
   <body>
     <main>
-      <header><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</header>
-      <section>
+      <h2><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h2>
       <% for(const id of idsToShow) { %>
+      <section>
         <div class="chart" id="chart-<%= id %>"></div>
-      <% } %>
+        <table>
+          <caption>Latest 10 histories</caption>
+          <tr>
+            <th>Date</th>
+            <th>Open issues</th>
+            <th>Closed issues</th>
+          </tr>
+          <% for(const row of historiesById[id].slice(0, 10)) { %>
+          <tr>
+            <td><%= new Date(row[0]).toLocaleString('en-GB') %></td>
+            <td><%= row[1] %></td>
+            <td><%= row[2] %></td>
+          </tr>
+          <% } %>
+        </table>
       </section>
+      <% } %>
+
       <section>
         Last Update: <%= now %>(UTC)
       </section>

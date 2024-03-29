@@ -107,6 +107,7 @@ limit 1000
   let tmpl = fs.readFileSync(`template.ejs`, file_opts);
   let body = ejs.render(tmpl, {
     now: new Date().toLocaleString('en-GB'),
+    historiesById: historiesById,
     historiesByIdStr: JSON.stringify(historiesById),
     idToTitleStr: JSON.stringify(idToTitle),
     idsToShow: idsToShow,
