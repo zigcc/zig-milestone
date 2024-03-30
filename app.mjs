@@ -116,7 +116,7 @@ limit 1000
     now: new Date().toLocaleString('en-GB'),
     historiesById: historiesById,
     historiesByIdStr: JSON.stringify(historiesById),
-    idToTitleStr: JSON.stringify(idToTitle),
+    idToTitle: idToTitle,
     idsToShow: idsToShow,
   });
   fs.writeFileSync('web/raw.html', body, fileOpts);

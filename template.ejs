@@ -11,20 +11,27 @@
     <link rel="stylesheet" href="app.css">
     <script>
       const historiesById = <%- historiesByIdStr  %>;
-      const idToTitle  = <%- idToTitleStr  %>;
       window.onload = function() {
-      <% for(const id of idsToShow) { %>
-      renderChart(historiesById, idToTitle, <%= id %>);
-      <% } %>
+        const charts = [
+          <% for(const id of idsToShow) { %>
+          renderChart(historiesById, <%= id %>),
+          <% } %>
+        ];
+        window.addEventListener('resize', (event) => {
+          charts.forEach((chart) => {
+            chart.resize(event);
+          });
+        });
       }
     </script>
   </head>
 
   <body>
     <main>
-      <h2><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h2>
+      <h1><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h1>
       <% for(const id of idsToShow) { %>
       <section>
+      <h3><a href="https://github.com/ziglang/zig/milestone/<%= id %>"><%= idToTitle[id] %></a></h3>
         <div class="chart" id="chart-<%= id %>"></div>
         <table>
           <caption>Latest 10 histories</caption>
@@ -44,9 +51,10 @@
       </section>
       <% } %>
 
-      <footer> &copy; 2024 ZigCC |
-        <a href="https://github.com/zigcc/zig-milestone">GitHub</a>
-        | Last Update: <%= now %>(UTC)
+      <footer> &copy; 2024 <a href="https://ziglang.cc">ZigCC</a>
+        | <a href="https://github.com/zigcc/zig-milestone">GitHub</a>
+        <br/>
+        Last Update: <%= now %>(UTC)
       </footer>
     </main>
     <script src="https://fastly.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>

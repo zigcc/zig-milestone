@@ -1,15 +1,10 @@
-function renderChart(historiesById, idToTitle, milestoneId) {
+function renderChart(historiesById, milestoneId) {
   const dom = document.getElementById(`chart-${milestoneId}`);
-  const myChart = echarts.init(dom, null, {
+  const chart = echarts.init(dom, null, {
     renderer: 'canvas',
     useDirtyRect: false
   });
-
   const option = {
-    title: {
-      text: idToTitle[milestoneId],
-      link: `https://github.com/ziglang/zig/milestone/${milestoneId}`
-    },
     tooltip: {
       trigger: 'axis'
     },
@@ -54,7 +49,6 @@ function renderChart(historiesById, idToTitle, milestoneId) {
       },
     ]
   };
-
-  myChart.setOption(option);
-  return myChart;
+  chart.setOption(option);
+  return chart;
 }
