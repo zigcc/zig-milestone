@@ -5,9 +5,17 @@ import ejs from 'ejs';
 import fs from 'fs';
 
 const client = createClient({
-  url: process.env.URL ?? "file:/tmp/zig-local.db",
+  url: process.env.URL ?? "file:/tmp/zig-milestone.db",
   authToken: process.env.TURSO_TOKEN,
 });
+
+async function initDatabase() {
+  let sqls = fs.readFileSync('schema.sql', 'utf8').split(';');
+  sqls = sqls.filter((sql) => sql.trim().length > 0);
+  console.log(sqls, sqls.length);
+  const ret = await client.batch(sqls, 'write');
+  console.log(ret);
+}
 
 async function fetchHistories() {
   const result = await client.execute(
@@ -18,16 +26,18 @@ async function fetchHistories() {
   for (const row of result.rows) {
     const mid = row['id'];
     const resp = await fetch(`https://api.github.com/repos/ziglang/zig/milestones/${mid}`);
-    const m = await resp.json();
-
+    const milestone = await resp.json();
     try {
       const r = await client.execute({
-        sql: "INSERT INTO milestone_histories VALUES (:created_at, :mid, :open_issues, :closed_issues)",
+        sql: `
+INSERT INTO milestone_histories (created_at, mid, open_issues, closed_issues)
+    VALUES (:created_at, :mid, :open_issues, :closed_issues)
+`,
         args: {
           created_at: now,
           mid: mid,
-          open_issues: m['open_issues'],
-          closed_issues: m['closed_issues'],
+          open_issues: milestone['open_issues'],
+          closed_issues: milestone['closed_issues'],
         },
       });
       console.log(r);
@@ -49,7 +59,10 @@ async function fetchMilestones() {
   const milestones = await resp.json();
   for(const m of milestones) {
     const r = await client.execute({
-      sql: "INSERT INTO milestones VALUES (:id, :created_at, :updated_at, :state, :title, :description)",
+      sql: `
+INSERT INTO milestones (id, created_at, updated_at, state, title, description)
+    VALUES (:id, :created_at, :updated_at, :state, :title, :description)
+`,
       args: {
         id: m['number'],
         created_at: m['created_at'],
@@ -131,8 +144,11 @@ case 'fetch-history':
 case 'fetch-milestone':
   await fetchMilestones();
   break;
-case 'gen-page':
+case 'gen-html':
   await GenerateHtml();
+  break;
+case 'init-db':
+  await initDatabase();
   break;
 default:
   console.error("unknown cmd", cmd);

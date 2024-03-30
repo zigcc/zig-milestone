@@ -1,9 +1,10 @@
 #+TITLE: Zig Milestone Monitor
 #+DATE: 2024-03-28T21:12:54+0800
-#+LASTMOD: 2024-03-30T08:58:29+0800
+#+LASTMOD: 2024-03-30T16:52:05+0800
 #+AUTHOR: Jiacai Liu
 
 [[https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml][https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml/badge.svg]]
+[[https://github.com/zigcc/zig-milestone/actions/workflows/fetch.yml][https://github.com/zigcc/zig-milestone/actions/workflows/fetch.yml/badge.svg]]
 [[https://github.com/zigcc/zig-milestone/actions/workflows/pages.yml][https://github.com/zigcc/zig-milestone/actions/workflows/pages.yml/badge.svg]]
 
 Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress ⚡️, powered by [[https://turso.tech/][Turso]] and update every day via GitHub Actions.
@@ -13,6 +14,11 @@ Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress �
 #+end_quote
 
 * SQLite tables
+#+begin_src bash :results code :exports results :wrap src sql
+cat schema.sql
+#+end_src
+
+#+RESULTS:
 #+begin_src sql
 CREATE TABLE IF NOT EXISTS milestones (
   id integer PRIMARY KEY,

@@ -4,9 +4,10 @@
   "description": "",
   "main": "db.mjs",
   "scripts": {
+    "init-db": "./app.mjs init-db",
+    "fetch-milestone": "./app.mjs fetch-milestone",
     "fetch-history": "./app.mjs fetch-history",
-    "gen-page": "./app.mjs gen-page",
-    "fetch-milestone": "./app.mjs fetch-milestone"
+    "gen-html": "./app.mjs gen-html"
   },
   "repository": {
     "type": "git",

@@ -1,14 +1,12 @@
-name: CI
+name: Fetch Milestone
 
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '0 0,12 * * *'
 
 jobs:
-  ci:
+  fetch:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -16,9 +14,8 @@ jobs:
       - name: Install deps
         run: |
           npm i
-      - name: Run script
+      - name: Update
         run: |
-          npm run init-db
-          npm run fetch-milestone
+          export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
+          export URL=libsql://zig-jiacai2050.turso.io
           npm run fetch-history
-          npm run gen-html

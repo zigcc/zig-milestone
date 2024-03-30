@@ -35,9 +35,8 @@ jobs:
       - run: |
           export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
           export URL=libsql://zig-jiacai2050.turso.io
-          npm run gen-page
+          npm run gen-html
           minhtml --output web/index.html --keep-closing-tags --minify-css web/raw.html
-          rm web/raw.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
