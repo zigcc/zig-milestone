@@ -5,6 +5,20 @@ on:
   schedule:
     - cron: '0 0,12 * * *'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  RUSTFLAGS: "-C debuginfo=1"
+  URL: "libsql://zig-jiacai2050.turso.io"
+  TURSO_TOKEN: "${{ secrets.TURSO_TOKEN }}"
+
 jobs:
   fetch:
     timeout-minutes: 10
@@ -16,6 +30,38 @@ jobs:
           npm i
       - name: Update
         run: |
-          export TURSO_TOKEN=${{ secrets.TURSO_TOKEN }}
-          export URL=libsql://zig-jiacai2050.turso.io
           npm run fetch-history
+
+  build:
+    runs-on: ubuntu-latest
+    needs: fetch
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Crates
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+          key: ${{ runner.os }}
+      - run: |
+          # https://github.com/wilsonzlin/minify-html
+          cargo install minhtml
+          npm i
+      - run: |
+          npm run gen-html
+          minhtml --output web/index.html --keep-closing-tags --minify-css web/raw.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: web
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
