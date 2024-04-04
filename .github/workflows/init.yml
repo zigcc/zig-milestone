@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 env:
-  RUSTFLAGS: "-C debuginfo=1"
   TURSO_DB_URL: "libsql://zig-jiacai2050.turso.io"
   TURSO_TOKEN: "${{ secrets.TURSO_TOKEN }}"
   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

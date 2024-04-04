@@ -27,6 +27,9 @@ jobs:
           sleep 3
           npm run fetch-history
           npm run gen-html
-      - uses: actions/download-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: web/raw.html
+          name: ci-web
+          path: web
+          retention-days: 10

@@ -56,7 +56,6 @@ query {
     throw new Error(await r.text());
   }
   const body = JSON.parse(await r.text());
-  console.log(JSON.stringify(body, null, 2));
   const repoInfo = await body['data']['repository'];
   const sqlRet = await client.execute({
     sql: `
@@ -113,7 +112,7 @@ INSERT INTO milestone_histories (created_at, mid, open_issues, closed_issues)
           closed_issues: milestone['closed_issues'],
         },
       });
-      console.log(r);
+      console.log(`insert milestone history`, r);
     } catch (e) {
       if (!firstErr) {
         firstErr = e;
