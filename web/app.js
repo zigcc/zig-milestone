@@ -25,6 +25,10 @@ const commonChartOpts = {
   yAxis: {
     type: 'value'
   },
+  dataZoom: [{
+    start: 0,
+    end: 100
+ }]
 };
 
 function renderMilestoneChart(historiesById, milestoneId) {
@@ -42,13 +46,13 @@ function renderMilestoneChart(historiesById, milestoneId) {
       name: 'Open',
       type: 'line',
       stack: 'Total',
-      data: historiesById[milestoneId].map((item) => [new Date(item[0]), item[1]])
+      data: historiesById[milestoneId].map((item) => [item[0], item[1]])
     },
     {
       name: 'Closed',
       type: 'line',
       stack: 'Total',
-      data: historiesById[milestoneId].map((item) => [new Date(item[0]), item[2]])
+      data: historiesById[milestoneId].map((item) => [item[0], item[2]])
     },
   ];
 
@@ -78,7 +82,7 @@ function renderRepoChart(repoHistories, repoId) {
     let series = {name: col, type: 'line', stack: 'Total', data:[] };
     for(const row of repoHistories) {
       // first col is ts, shift by one.
-      series['data'].push([new Date(row[0]), row[colIdx+1]]);
+      series['data'].push([row[0], row[colIdx+1]]);
     }
 
     return series;
