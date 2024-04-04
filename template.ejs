@@ -11,10 +11,12 @@
     <link rel="stylesheet" href="app.css">
     <script>
       const historiesById = <%- historiesByIdStr  %>;
+      const repoHistories = <%- repoHistoriesStr  %>;
       window.onload = function() {
         const charts = [
+          renderRepoChart(repoHistories, "repo-chart"),
           <% for(const id of idsToShow) { %>
-          renderChart(historiesById, <%= id %>),
+          renderMilestoneChart(historiesById, <%= id %>),
           <% } %>
         ];
         window.addEventListener('resize', (event) => {
@@ -29,9 +31,11 @@
   <body>
     <main>
       <h1><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h1>
+      <h3><a href="https://github.com/ziglang/zig">Zig repository</a></h3>
+      <div class="chart" id="repo-chart"></div>
       <% for(const id of idsToShow) { %>
       <section>
-      <h3><a href="https://github.com/ziglang/zig/milestone/<%= id %>"><%= idToTitle[id] %></a></h3>
+        <h3><a href="https://github.com/ziglang/zig/milestone/<%= id %>"><%= idToTitle[id] %></a></h3>
         <div class="chart" id="chart-<%= id %>"></div>
         <table>
           <caption>Latest 10 histories</caption>

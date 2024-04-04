@@ -1,6 +1,6 @@
 #+TITLE: Zig Milestone Monitor
 #+DATE: 2024-03-28T21:12:54+0800
-#+LASTMOD: 2024-04-02T22:08:31+0800
+#+LASTMOD: 2024-04-04T12:33:17+0800
 #+AUTHOR: Jiacai Liu
 
 [[https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml][https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml/badge.svg]]
@@ -31,6 +31,18 @@ CREATE TABLE IF NOT EXISTS milestones (
 CREATE TABLE IF NOT EXISTS milestone_histories (
   created_at integer,
   mid integer,
+  open_issues integer,
+  closed_issues integer
+);
+
+CREATE TABLE IF NOT EXISTS repo_histories (
+  created_at integer,
+  forks integer,
+  stars integer,
+  watchers integer,
+  open_pulls integer,
+  closed_pulls integer,
+  merged_pulls integer,
   open_issues integer,
   closed_issues integer
 );

@@ -5,7 +5,7 @@ import ejs from 'ejs';
 import fs from 'fs';
 
 const client = createClient({
-  url: process.env.URL ?? "file:/tmp/zig-milestone.db",
+  url: process.env.TURSO_DB_URL ?? "file:./zig-milestone.db",
   authToken: process.env.TURSO_TOKEN,
 });
 const GITHUB_HEADERS = {
@@ -156,8 +156,10 @@ INSERT INTO milestones (id, created_at, updated_at, state, title, description)
 
 async function GenerateHtml() {
   const fileOpts = { 'encoding': 'utf8', 'flags': 'w' };
-  const rs = await client.execute(
-`
+  let idToTitle = {};
+  {
+    const rs = await client.execute(
+      `
 SELECT
     id,
     title
@@ -166,12 +168,47 @@ FROM
 WHERE
     state = 'open'
 `
-  );
-  let idToTitle = {};
-  for (const row of rs.rows) {
-    idToTitle[row['id']] = row['title'];
+    );
+    for (const row of rs.rows) {
+      idToTitle[row['id']] = row['title'];
+    }
+    console.log(idToTitle);
   }
-  console.log(idToTitle);
+  let repoHistories = [];
+  {
+    const rs = await client.execute(
+      `
+SELECT
+  created_at,
+  forks,
+  stars,
+  watchers,
+  open_pulls,
+  closed_pulls,
+  merged_pulls,
+  open_issues,
+  closed_issues
+FROM
+    repo_histories
+ORDER BY
+    created_at desc
+limit 1000
+`
+    );
+    for (const row of rs.rows) {
+      repoHistories.push([
+        row['created_at'],
+        row['forks'],
+        row['stars'],
+        row['watchers'],
+        row['open_pulls'],
+        row['closed_pulls'],
+        row['merged_pulls'],
+        row['open_issues'],
+        row['closed_issues'],
+      ]);
+    }
+  }
 
   const idsToShow = [
     '23', // 0.12.0
@@ -207,6 +244,7 @@ limit 1000
     now: new Date().toLocaleString('en-GB'),
     historiesById: historiesById,
     historiesByIdStr: JSON.stringify(historiesById),
+    repoHistoriesStr: JSON.stringify(repoHistories),
     idToTitle: idToTitle,
     idsToShow: idsToShow,
   });
