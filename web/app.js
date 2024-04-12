@@ -31,6 +31,18 @@ const commonChartOpts = {
  }]
 };
 
+function addLegendClick(chart) {
+  chart.on('legendselectchanged', function (params) {
+    const currentClicked = params.name;
+    for(const item of Object.keys(params.selected)) {
+      if (currentClicked !== item) {
+        chart.dispatchAction({type: 'legendUnSelect', name: item});
+      }
+    }
+    chart.dispatchAction({type: 'legendSelect', name: currentClicked});
+  });
+}
+
 function renderMilestoneChart(historiesById, milestoneId) {
   const dom = document.getElementById(`chart-${milestoneId}`);
   const chart = echarts.init(dom, null, {
@@ -79,19 +91,29 @@ function renderRepoChart(repoHistories, repoId) {
   ];
   var opt = {...commonChartOpts};
   const series = columns.map((col, colIdx) => {
-    let series = {name: col, type: 'line', stack: 'Total', data:[] };
+    let series = {
+      name: col, type: 'line', stack: 'Total',
+      data: [],
+    };
     for(const row of repoHistories) {
-      // first col is ts, shift by one.
+      // first col is timestamp, shift by one.
       series['data'].push([row[0], row[colIdx+1]]);
     }
 
     return series;
   });
-  opt['legend'] = { data: columns };
+  opt['legend'] = {
+    selected: columns.reduce((acc, curr) => {
+      // By default only show stars
+      acc[curr] = curr === 'stars';
+      return acc;
+    }, {}),
+    data: columns,
+  };
   opt['toolbox'] = {};
   opt['series'] = series;
-  console.log(opt);
 
   chart.setOption(opt);
+  addLegendClick(chart);
   return chart;
 }
