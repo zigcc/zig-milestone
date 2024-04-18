@@ -1,6 +1,6 @@
 #+TITLE: Zig Milestone Monitor
 #+DATE: 2024-03-28T21:12:54+0800
-#+LASTMOD: 2024-04-04T12:48:01+0800
+#+LASTMOD: 2024-04-18T21:56:25+0800
 #+AUTHOR: Jiacai Liu
 
 [[https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml][https://github.com/zigcc/zig-milestone/actions/workflows/ci.yml/badge.svg]]
@@ -9,7 +9,7 @@
 Monitor [[https://github.com/ziglang/zig/milestones][Zig milestone]] progress ⚡️, powered by [[https://turso.tech/][Turso]] and update every day via GitHub Actions.
 
 #+begin_quote
-[[https://ziglang.cc/zig-milestone/]]
+[[https://milestone.ziglang.cc/]]
 #+end_quote
 
 * SQLite tables

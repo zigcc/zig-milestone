@@ -51,6 +51,7 @@ function renderMilestoneChart(historiesById, milestoneId) {
   });
   var opt = {...commonChartOpts};
   opt['legend'] = {
+    selected: { 'Closed': false },
     data: ['Open', 'Closed']
   };
   opt['series'] = [
@@ -69,6 +70,7 @@ function renderMilestoneChart(historiesById, milestoneId) {
   ];
 
   chart.setOption(opt);
+  addLegendClick(chart);
   return chart;
 }
 
