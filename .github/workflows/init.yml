@@ -20,3 +20,4 @@ jobs:
       - name: init
         run: |
           npm run init-db
+          npm run fetch-milestone

@@ -127,7 +127,9 @@ INSERT INTO milestone_histories (created_at, mid, open_issues, closed_issues)
 }
 
 async function fetchMilestones() {
-  const resp = await fetch('https://api.github.com/repos/ziglang/zig/milestones', {
+  // https://docs.github.com/en/rest/issues/milestones?apiVersion=2022-11-28
+  const url = 'https://api.github.com/repos/ziglang/zig/milestones?state=all&per_page=100';
+  const resp = await fetch(url, {
     headers: GITHUB_HEADERS,
   });
   if (!resp.ok) {
@@ -139,6 +141,9 @@ async function fetchMilestones() {
       sql: `
 INSERT INTO milestones (id, created_at, updated_at, state, title, description)
     VALUES (:id, :created_at, :updated_at, :state, :title, :description)
+ON CONFLICT (id)
+    DO UPDATE SET
+        updated_at = excluded.updated_at, state = excluded.state, title = excluded.title, description = excluded.description
 `,
       args: {
         id: m['number'],
