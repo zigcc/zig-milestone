@@ -160,24 +160,14 @@ ON CONFLICT (id)
 
 async function GenerateHtml() {
   const fileOpts = { 'encoding': 'utf8', 'flags': 'w' };
-  let idToTitle = {};
-  {
-    const rs = await client.execute(
-      `
-SELECT
-    id,
-    title
-FROM
-    milestones m
-WHERE
-    state = 'open'
-`
-    );
-    for (const row of rs.rows) {
-      idToTitle[row['id']] = row['title'];
-    }
-    console.log(idToTitle);
-  }
+  const idToTitle = {
+    '2': '1.0.0',
+    '5': '1.1.0',
+    '14': '0.15.0',
+    '19': '0.14.0',
+    '20': '0.13.0',
+    '23': '0.12.0',
+  };
   let repoHistories = [];
   {
     const rs = await client.execute(
@@ -215,12 +205,12 @@ limit 1000
   }
 
   const idsToShow = [
-    '23', // 0.12.0
     '20', // 0.13.0
-    '19', // '0.14.0',
-    '14', // '0.15.0',
-    '2', // '1.0.0'
-    '5', // '1.1.0',
+    '23', // 0.12.0
+    // '19', // '0.14.0',
+    // '14', // '0.15.0',
+    // '2', // '1.0.0'
+    // '5', // '1.1.0',
   ];
 
   const sqls = idsToShow.map((id) => {

@@ -50,8 +50,14 @@ function renderMilestoneChart(historiesById, milestoneId) {
     useDirtyRect: false
   });
   var opt = {...commonChartOpts};
+  let selected = { 'Closed': false };
+  if(milestoneId === 20) {
+    // 0.13.0 dev just begins, so display close issue by default
+    selected = { 'Open': false };
+  }
+
   opt['legend'] = {
-    selected: { 'Closed': false },
+    selected: selected,
     data: ['Open', 'Closed']
   };
   opt['series'] = [
