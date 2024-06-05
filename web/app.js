@@ -23,7 +23,8 @@ const commonChartOpts = {
     boundaryGap: false,
   },
   yAxis: {
-    type: 'value'
+    type: 'value',
+    scale: true,
   },
   dataZoom: [{
     start: 0,
@@ -81,45 +82,22 @@ function renderMilestoneChart(historiesById, milestoneId) {
 }
 
 
-function renderRepoChart(repoHistories, repoId) {
-  const dom = document.getElementById(`${repoId}`);
+function renderRepoChart(repoHistories, repoField, fieldIdx) {
+  const dom = document.getElementById(`repo-${repoField}`);
   const chart = echarts.init(dom, null, {
     renderer: 'canvas',
     useDirtyRect: false
   });
-  const columns = [
-    'forks',
-    'stars',
-    'watchers',
-    'open_pulls',
-    'closed_pulls',
-    'merged_pulls',
-    'open_issues',
-    'closed_issues',
-  ];
   var opt = {...commonChartOpts};
-  const series = columns.map((col, colIdx) => {
-    let series = {
-      name: col, type: 'line', stack: 'Total',
-      data: [],
-    };
-    for(const row of repoHistories) {
-      // first col is timestamp, shift by one.
-      series['data'].push([row[0], row[colIdx+1]]);
-    }
-
-    return series;
-  });
   opt['legend'] = {
-    selected: columns.reduce((acc, curr) => {
-      // By default only show stars
-      acc[curr] = curr === 'stars';
-      return acc;
-    }, {}),
-    data: columns,
+    data: [repoField],
   };
-  opt['toolbox'] = {};
-  opt['series'] = series;
+  opt['series'] = [{
+    name: repoField,
+    type: 'line',
+    stack: 'Total',
+    data: repoHistories.map((item) => [item[0], item[fieldIdx]])
+ }];
 
   chart.setOption(opt);
   addLegendClick(chart);

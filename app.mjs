@@ -167,19 +167,21 @@ async function GenerateHtml() {
     '25': '0.13.0',
   };
   let repoHistories = [];
+  const repoFields = [
+    'forks',
+    'stars',
+    'watchers',
+    'open_pulls',
+    'closed_pulls',
+    'merged_pulls',
+    'open_issues',
+    'closed_issues',
+  ];
   {
     const rs = await client.execute(
       `
 SELECT
-  created_at,
-  forks,
-  stars,
-  watchers,
-  open_pulls,
-  closed_pulls,
-  merged_pulls,
-  open_issues,
-  closed_issues
+  created_at, ${repoFields.join(', ')}
 FROM
     repo_histories
 ORDER BY
@@ -204,7 +206,7 @@ limit 1000
 
   const idsToShow = [
     '25', // 0.13.0
-    '23', // 0.12.0
+    // '23', // 0.12.0
     // '20', // '0.14.0',
     // '19', // '0.15.0',
   ];
@@ -237,6 +239,7 @@ limit 1000
     repoHistoriesStr: JSON.stringify(repoHistories),
     idToTitle: idToTitle,
     idsToShow: idsToShow,
+    repoFields: repoFields,
   });
   fs.writeFileSync('web/raw.html', body, fileOpts);
 }

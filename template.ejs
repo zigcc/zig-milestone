@@ -14,7 +14,10 @@
       const repoHistories = <%- repoHistoriesStr  %>;
       window.onload = function() {
         const charts = [
-          renderRepoChart(repoHistories, "repo-chart"),
+            <% for(const [index, field] of repoFields.entries()) { %>
+                                                                   renderRepoChart(repoHistories, '<%= field %>', <%= index+1 %>),
+          <% } %>
+
           <% for(const id of idsToShow) { %>
           renderMilestoneChart(historiesById, <%= id %>),
           <% } %>
@@ -31,8 +34,6 @@
   <body>
     <main>
       <h1><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h1>
-      <h3><a href="https://github.com/ziglang/zig">Zig repository</a></h3>
-      <div class="chart" id="repo-chart"></div>
       <% for(const id of idsToShow) { %>
       <section>
         <h3><a href="https://github.com/ziglang/zig/milestone/<%= id %>"><%= idToTitle[id] %></a></h3>
@@ -53,6 +54,11 @@
           <% } %>
         </table>
       </section>
+      <% } %>
+
+      <h3><a href="https://github.com/ziglang/zig">Zig repository</a></h3>
+      <% for(const field of repoFields) { %>
+      <div class="chart" id="repo-<%= field %>"></div>
       <% } %>
 
       <footer> &copy; 2024 <a href="https://ziglang.cc">ZigCC</a>
