@@ -23,6 +23,7 @@ const commonChartOpts = {
     boundaryGap: false,
   },
   yAxis: {
+    scale: true,
     type: 'value'
   },
   dataZoom: [{
