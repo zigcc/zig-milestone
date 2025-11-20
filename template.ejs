@@ -10,14 +10,10 @@
     <link rel="stylesheet" href="https://unpkg.com/magick.css">
     <link rel="stylesheet" href="app.css">
     <script>
-      const historiesById = <%- historiesByIdStr  %>;
       const repoHistories = <%- repoHistoriesStr  %>;
       window.onload = function() {
         const charts = [
           renderRepoChart(repoHistories, "repo-chart"),
-          <% for(const id of idsToShow) { %>
-          renderMilestoneChart(historiesById, <%= id %>),
-          <% } %>
         ];
         window.addEventListener('resize', (event) => {
           charts.forEach((chart) => {
@@ -33,27 +29,6 @@
       <h1><a href="https://github.com/ziglang/zig/milestones">Zig Milestone</a> Monitor</h1>
       <h3><a href="https://github.com/ziglang/zig">Zig repository</a></h3>
       <div class="chart" id="repo-chart"></div>
-      <% for(const id of idsToShow) { %>
-      <section>
-        <h3><a href="https://github.com/ziglang/zig/milestone/<%= id %>"><%= idToTitle[id] %></a></h3>
-        <div class="chart" id="chart-<%= id %>"></div>
-        <table>
-          <caption>Latest 10 histories</caption>
-          <tr>
-            <th>Date</th>
-            <th>Open issues</th>
-            <th>Closed issues</th>
-          </tr>
-          <% for(const row of historiesById[id].slice(0, 10)) { %>
-          <tr>
-            <td><%= new Date(row[0]).toLocaleString('en-GB') %></td>
-            <td><%= row[1] %></td>
-            <td><%= row[2] %></td>
-          </tr>
-          <% } %>
-        </table>
-      </section>
-      <% } %>
 
       <footer> &copy; 2024 - 2025 <a href="https://ziglang.cc">ZigCC</a>
         | <a href="https://github.com/zigcc/zig-milestone">GitHub</a>
